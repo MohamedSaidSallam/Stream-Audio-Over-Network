@@ -4,7 +4,7 @@ import pyaudio
 HOST = socket.gethostname()
 PORT = 5000
 
-CHUNK = 1024 * 4
+CHUNK = 1024
 p = pyaudio.PyAudio()
 
 device = p.get_device_info_by_index(8)

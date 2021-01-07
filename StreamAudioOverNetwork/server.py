@@ -4,7 +4,7 @@ import pyaudio
 PORT = 5000
 
 p = pyaudio.PyAudio()
-CHUNK = 1024 * 4
+CHUNK = 1024
 
 stream = p.open(format=pyaudio.paInt16,
                 channels=2,
@@ -19,9 +19,9 @@ with socket.socket() as server_socket:
     conn, address = server_socket.accept()
     print("Connection from " + address[0] + ":" + str(address[1]))
 
-    data = conn.recv(4096)
+    data = conn.recv(CHUNK)
     while data != "":
-        data = conn.recv(4096)
+        data = conn.recv(CHUNK)
         stream.write(data)
 
 stream.stop_stream()
