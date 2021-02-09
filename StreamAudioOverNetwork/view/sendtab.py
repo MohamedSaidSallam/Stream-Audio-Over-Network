@@ -51,6 +51,10 @@ def getSendTab(notebook):
     devicesList.bind("<<ListboxSelect>>", callback)
 
     devicesList.select_set(0)
+    def onTabChange(event):
+        devicesList.selection_clear(0, len(validDevices))
+        devicesList.select_set(0)
+    notebook.bind("<<NotebookTabChanged>>", onTabChange)
     someInfo = tk.Label(sendTab, text=getInfoText(0))
 
     rowNum = addRow(rowNum, someInfo)
