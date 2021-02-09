@@ -5,7 +5,7 @@ from StreamAudioOverNetwork.audioutility import (getDeviceInfoString,
                                                  getValidDevicesList)
 from StreamAudioOverNetwork.network.networkutility import getLocalIP
 from StreamAudioOverNetwork.streamaudio import SendAudio
-from StreamAudioOverNetwork.view.utility import setGrid
+from StreamAudioOverNetwork.view.gridUtility import addRow
 
 isStreaming = False
 
@@ -16,11 +16,13 @@ def getSendTab(notebook):
     sendAudio = SendAudio()
     sendTab = ttk.Frame(notebook)
 
+    rowNum = 0
+
     header = tk.Label(sendTab, text="Available Device(s)")
-    setGrid(header)
+    rowNum = addRow(rowNum, header)
 
     devicesList = tk.Listbox(sendTab)
-    setGrid(devicesList, row=1)
+    rowNum = addRow(rowNum, devicesList)
 
     validDevices = getValidDevicesList()
 
@@ -33,8 +35,7 @@ def getSendTab(notebook):
     portTextBox = tk.Entry(sendTab)
     portTextBox.insert(0, '5000')
 
-    setGrid(portLabel, row=2, colSpan=1)
-    setGrid(portTextBox, col=1, row=2, colSpan=1)
+    rowNum = addRow(rowNum, portLabel, portTextBox)
 
     def getInfoText(selectionIndex):
         return getDeviceInfoString(validDevices[selectionIndex][0]) + f'\n Local IP: {getLocalIP()}'
@@ -52,7 +53,7 @@ def getSendTab(notebook):
     devicesList.select_set(0)
     someInfo = tk.Label(sendTab, text=getInfoText(0))
 
-    setGrid(someInfo, row=3)
+    rowNum = addRow(rowNum, someInfo)
 
     def onStreamClick():
         global isStreaming
@@ -78,6 +79,6 @@ def getSendTab(notebook):
                                       text="Start Streaming",
                                       command=onStreamClick,
                                       )
-    setGrid(toggleStreamingButton, row=4)
+    rowNum = addRow(rowNum, toggleStreamingButton)
 
     return sendTab

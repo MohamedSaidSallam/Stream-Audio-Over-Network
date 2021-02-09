@@ -4,22 +4,23 @@ from tkinter import ttk
 from StreamAudioOverNetwork.firewall import toggleFirewall
 from StreamAudioOverNetwork.network.networkutility import getLocalIP
 from StreamAudioOverNetwork.streamaudio import ReceiveAudio
-from StreamAudioOverNetwork.view.utility import setGrid
+from StreamAudioOverNetwork.view.gridUtility import addRow
 
 
 def getReceiveTab(notebook):
     receiveAudio = ReceiveAudio()
     receiveTab = ttk.Frame(notebook)
 
+    rowNum = 0
+
     myIPLabel = tk.Label(receiveTab, text=f"My Local IP: {getLocalIP()}")
-    setGrid(myIPLabel, row=0)
+    rowNum = addRow(rowNum, myIPLabel)
 
     portLabel = tk.Label(receiveTab, text="Port: ")
     portTextBox = tk.Entry(receiveTab)
     portTextBox.insert(0, '5000')
 
-    setGrid(portLabel, row=1, colSpan=1)
-    setGrid(portTextBox, col=1, row=1, colSpan=1)
+    rowNum = addRow(rowNum, portLabel, portTextBox)
 
     def toggleReceiving():
         if receiveAudio.isStopped():
@@ -34,11 +35,11 @@ def getReceiveTab(notebook):
                                       text="Start Receiving",
                                       command=toggleReceiving
                                       )
-    setGrid(toggleReceivingButton, row=2)
+    rowNum = addRow(rowNum, toggleReceivingButton)
     toggleFirewallgButton = tk.Button(receiveTab,
                                       text="Toggle Firewall",
                                       command=toggleFirewall
                                       )
-    setGrid(toggleFirewallgButton, row=3)
+    rowNum = addRow(rowNum, toggleFirewallgButton)
 
     return receiveTab
