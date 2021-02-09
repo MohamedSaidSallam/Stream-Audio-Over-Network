@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 import socket
 import pyaudio
 import threading
@@ -5,12 +6,34 @@ import threading
 CHUNK = 1024
 
 
-class ReceiveAudio():
-    port = None
+class ThreadedAudio(ABC):
 
     def __init__(self):
         self._stop_event = threading.Event()
+        self._stop_event.set()  # ! hmmm
+
+    @abstractmethod
+    def logic(self):
+        pass
+
+    def start(self):
+        if not self.isStopped():
+            raise Exception()
+        self._stop_event.clear()
+        self._thread = threading.Thread(target=self.logic)
+        self._thread.start()
+
+    def stop(self):
+        if self.isStopped():
+            raise Exception()
         self._stop_event.set()
+
+    def isStopped(self):
+        return self._stop_event.is_set()
+
+
+class ReceiveAudio(ThreadedAudio):
+    port = None
 
     def logic(self):
         self._p = pyaudio.PyAudio()
@@ -36,27 +59,8 @@ class ReceiveAudio():
         self._stream.close()
         self._p.terminate()
 
-    def start(self):
-        if not self.isStopped():
-            raise Exception()
-        self._stop_event.clear()
-        self._thread = threading.Thread(target=self.logic)
-        self._thread.start()
 
-    def stop(self):
-        if self.isStopped():
-            raise Exception()
-        self._stop_event.set()
-
-    def isStopped(self):
-        return self._stop_event.is_set()
-
-
-class SendAudio():
-    def __init__(self):
-        self._stop_event = threading.Event()
-        self._p = pyaudio.PyAudio()
-
+class SendAudio(ThreadedAudio):
     def logic(self):
         with socket.socket() as client_socket:
             client_socket.connect((self._host, self.port))
@@ -72,9 +76,7 @@ class SendAudio():
         self._p.terminate()
 
     def start(self, port, deviceIndex, host):
-        if self.isStopped():
-            raise Exception()
-
+        self._p = pyaudio.PyAudio()
         self._host = host
         device = self._p.get_device_info_by_index(deviceIndex)
         self._stream = self._p.open(format=pyaudio.paInt16,
@@ -86,14 +88,4 @@ class SendAudio():
                                     as_loopback=True)
         self.port = port
 
-        self._stop_event.clear()
-        self._thread = threading.Thread(target=self.logic)
-        self._thread.start()
-
-    def stop(self):
-        if not self.isStopped():
-            raise Exception()
-        self._stop_event.set()
-
-    def isStopped(self):
-        return self._stop_event.is_set()
+        super().start()
