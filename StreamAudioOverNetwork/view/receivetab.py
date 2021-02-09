@@ -6,6 +6,8 @@ from StreamAudioOverNetwork.network.networkutility import getLocalIP
 from StreamAudioOverNetwork.streamaudio import ReceiveAudio
 from StreamAudioOverNetwork.view.gridUtility import addRow
 
+SEND_TAB_INDEX = 0
+
 
 def getReceiveTab(notebook):
     receiveAudio = ReceiveAudio()
@@ -26,10 +28,14 @@ def getReceiveTab(notebook):
         if receiveAudio.isStopped():
             receiveAudio.port = int(portTextBox.get())
             receiveAudio.start()
+
             toggleReceivingButton.configure(text="Stop Receiving")
+            notebook.tab(SEND_TAB_INDEX, state="disabled")
         else:
             receiveAudio.stop()
+
             toggleReceivingButton.configure(text="Start Receiving")
+            notebook.tab(SEND_TAB_INDEX, state="normal")
 
     toggleReceivingButton = tk.Button(receiveTab,
                                       text="Start Receiving",
