@@ -4,14 +4,16 @@ from tkinter import ttk
 from StreamAudioOverNetwork.audioutility import (getDeviceInfoString,
                                                  getValidDevicesList)
 from StreamAudioOverNetwork.network.networkutility import getLocalIP
+from StreamAudioOverNetwork.streamaudio import SendAudio
 from StreamAudioOverNetwork.view.utility import setGrid
 
-isStreaming = True
+isStreaming = False
 
 RECEIVE_TAB_INDEX = 1
 
 
 def getSendTab(notebook):
+    sendAudio = SendAudio()
     sendTab = ttk.Frame(notebook)
 
     header = tk.Label(sendTab, text="Available Device(s)")
@@ -57,16 +59,20 @@ def getSendTab(notebook):
         if isStreaming:
             isStreaming = False
 
-            port = int(portTextBox.get())
-            selectedDeviceIndex = devicesList.curselection()[0]
-
-            notebook.tab(RECEIVE_TAB_INDEX, state="disabled")
-            toggleStreamingButton.configure(text="Stop Streaming")
-        else:
-            isStreaming = True
+            sendAudio.stop()
 
             notebook.tab(RECEIVE_TAB_INDEX, state="normal")
             toggleStreamingButton.configure(text="Start Streaming")
+        else:
+            isStreaming = True
+
+            port = int(portTextBox.get())
+            selectedDeviceIndex = validDevices[devicesList.curselection()[
+                0]][0]
+            sendAudio.start(port, selectedDeviceIndex, getLocalIP())
+
+            notebook.tab(RECEIVE_TAB_INDEX, state="disabled")
+            toggleStreamingButton.configure(text="Stop Streaming")
 
     toggleStreamingButton = tk.Button(sendTab,
                                       text="Start Streaming",

@@ -53,19 +53,9 @@ class ReceiveAudio():
 
 
 class SendAudio():
-    def __init__(self, port, deviceIndex, host=socket.gethostname()):
+    def __init__(self):
         self._stop_event = threading.Event()
-        self._host = host
         self._p = pyaudio.PyAudio()
-        device = self._p.get_device_info_by_index(deviceIndex)
-        self._stream = self._p.open(format=pyaudio.paInt16,
-                                    channels=device["maxOutputChannels"],
-                                    rate=int(device["defaultSampleRate"]),
-                                    input=True,
-                                    frames_per_buffer=CHUNK,
-                                    input_device_index=device['index'],
-                                    as_loopback=True)
-        self.port = port
 
     def logic(self):
         with socket.socket() as client_socket:
@@ -81,9 +71,21 @@ class SendAudio():
         self._stream.close()
         self._p.terminate()
 
-    def start(self):
+    def start(self, port, deviceIndex, host):
         if self.isStopped():
             raise Exception()
+
+        self._host = host
+        device = self._p.get_device_info_by_index(deviceIndex)
+        self._stream = self._p.open(format=pyaudio.paInt16,
+                                    channels=device["maxOutputChannels"],
+                                    rate=int(device["defaultSampleRate"]),
+                                    input=True,
+                                    frames_per_buffer=CHUNK,
+                                    input_device_index=device['index'],
+                                    as_loopback=True)
+        self.port = port
+
         self._stop_event.clear()
         self._thread = threading.Thread(target=self.logic)
         self._thread.start()
