@@ -1,9 +1,21 @@
-# Stream Audio Over Network
+# Stream Audio Over Network [NOT SUPPORTED]
 
 [![GitHub Release][github_release_badge]][github_release_link]
 [![License][license-image]][license-url]
 
-A simple python project to stream audio over network. Mainly made so I can stream my laptop's audio to my PC with minimum quality loss.
+A simple python project to stream audio over the network. Mainly made so I can stream my laptop's audio to my PC with minimum quality loss.
+
+> NOT SUPPORTED: check [Known Issues](##Known-Issues) section.
+
+## Features
+
+* Stream Audio over network
+* Scan for compatable audio devies
+* GUI for device and port selection
+* Port forwarding for windows
+
+![SendAudio](docs/SendAudio.png)
+![ReceiveAudio](docs/ReceiveAudio.png)
 
 ## Getting Started
 
@@ -23,25 +35,36 @@ A [fork of PyAudio](https://github.com/intxcc/pyaudio_portaudio) that allows loo
 pip install PyAudio-0.2.11-cp37-cp37m-win_amd64.whl
 ```
 
+#### Use the install.bat script for windows
+
+The following can also be found in install.bat file.
+
+```batch
+py -3.7 -m venv venv
+venv\Scripts\python.exe -m pip install -r requirements.txt
+venv\Scripts\python.exe -m pip install PyAudio-0.2.11-cp37-cp37m-win_amd64.whl
+```
+
 ### Running the Code
 
 A step by step series of examples that tell you how to get a development env running
 
 Say what the step will be
 
-```
-Give the example
+```sh
+venv\Scripts\python.exe -m StreamAudioOverNetwork
 ```
 
-And repeat
-
-```
-until finished
-```
+Or you can use the run.bat file.
 
 ### Example
 
 Text
+
+## Known Issues
+
+* If no connection is made after clicking, The receive audio button the receive audio thread won't terminate as it won't reach the termination flag so even if the GUI is closed the thread remains.
+* After a random period, The data transfer will skip a part and get desynced and may suddenly start playing distorted audio until restarted.
 
 ## Built With
 
