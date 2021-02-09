@@ -42,9 +42,11 @@ def getReceiveTab(notebook):
                                       command=toggleReceiving
                                       )
     rowNum = addRow(rowNum, toggleReceivingButton)
+    def onToggleFirewall():
+        toggleFirewall(int(portTextBox.get()))
     toggleFirewallgButton = tk.Button(receiveTab,
                                       text="Toggle Firewall",
-                                      command=toggleFirewall
+                                      command=onToggleFirewall
                                       )
     rowNum = addRow(rowNum, toggleFirewallgButton)
 
