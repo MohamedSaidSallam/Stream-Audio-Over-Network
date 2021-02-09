@@ -1,7 +1,8 @@
-from abc import ABC, abstractmethod
 import socket
-import pyaudio
 import threading
+from abc import ABC, abstractmethod
+
+import pyaudio
 
 CHUNK = 1024
 

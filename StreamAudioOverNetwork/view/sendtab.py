@@ -51,6 +51,7 @@ def getSendTab(notebook):
     devicesList.bind("<<ListboxSelect>>", callback)
 
     devicesList.select_set(0)
+
     def onTabChange(event):
         devicesList.selection_clear(0, len(validDevices))
         devicesList.select_set(0)
